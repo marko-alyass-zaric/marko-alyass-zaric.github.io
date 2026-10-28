@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Case study: Fokus, a weekly AI-curated guide to Belgrade, built solo and in free time by a product manager with Claude Code, public on Telegram since September 2026 after about 10 weeks of work. 35 sources, 192 tests and 17 specs.">
+<meta name="author" content="Marko Alyass Zarić">
+<meta property="og:title" content="Fokus case study">
+<meta property="og:description" content="Case study: Fokus, a weekly AI-curated guide to Belgrade, built solo and in free time by a product manager with Claude Code, public on Telegram since September 2026 after about 10 weeks of work. 35 sources, 192 tests and 17 specs.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://marko-alyass-zaric.github.io/fokus/">
+<meta property="og:image" content="https://marko-alyass-zaric.github.io/fokus/img/og-image.png">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1254">
+<meta property="og:image:alt" content="Fokus case study. AI-curated weekly guide to what's worth doing in Belgrade, built solo with Claude Code.">
+<meta name="twitter:card" content="summary_large_image">
+<style>html{color-scheme:light dark}body{margin:0}img{max-width:100%}</style>
+<title>Fokus case study</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&display=swap">
+<style>
+  :root {
+    --ground: #F5F7FC;
+    --surface: #FFFFFF;
+    --ink: #10172A;
+    --ink-soft: #4A5570;
+    --rule: #D3D9E8;
+    --accent: #1F3FD6;
+    --accent-soft: #E3E8FC;
+    --signal: #F0B90B;
+    --signal-ink: #10172A;
+    --display: "Bricolage Grotesque", "Arial Narrow", Arial, sans-serif;
+    --body: "Newsreader", Georgia, "Times New Roman", serif;
+    --mono: "IBM Plex Mono", ui-monospace, Consolas, "Courier New", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0B1120;
+      --surface: #121A2E;
+      --ink: #E9EDF7;
+      --ink-soft: #A6B1CA;
+      --rule: #27324F;
+      --accent: #93A6FF;
+      --accent-soft: #1A2548;
+      --signal: #F5C531;
+      --signal-ink: #10172A;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0B1120;
+    --surface: #121A2E;
+    --ink: #E9EDF7;
+    --ink-soft: #A6B1CA;
+    --rule: #27324F;
+    --accent: #93A6FF;
+    --accent-soft: #1A2548;
+    --signal: #F5C531;
+    --signal-ink: #10172A;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 1.0938rem;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 68rem;
+    margin-inline: auto;
+    padding-inline: clamp(16px, 4vw, 40px);
+    padding-block: clamp(36px, 6vw, 76px);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(52px, 7vw, 92px);
+  }
+  p { margin: 0; max-width: 66ch; }
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  h1, h2, h3 { font-family: var(--display); margin: 0; text-wrap: balance; }
+  .mono {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* Masthead */
+  .masthead { display: flex; flex-direction: column; gap: 22px; }
+  .masthead h1 {
+    font-size: clamp(2.7rem, 8vw, 5.4rem);
+    font-weight: 800;
+    line-height: 0.96;
+    letter-spacing: -0.025em;
+  }
+  .masthead h1 span { color: var(--accent); }
+  .standfirst { font-size: clamp(1.2rem, 2.2vw, 1.45rem); line-height: 1.45; max-width: 46ch; }
+  .status {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    padding-block: 12px;
+    border-block: 1px solid var(--rule);
+  }
+  .status b {
+    font-family: var(--mono); font-weight: 500; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;
+    background: var(--signal); color: var(--signal-ink); padding: 3px 8px;
+  }
+  .status span { color: var(--ink-soft); font-size: 1rem; }
+
+  /* Stats as a listings row */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9.25rem, 1fr));
+    gap: 22px 28px;
+    padding-block: 26px;
+    border-top: 3px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    margin: 0;
+  }
+  .stats div { display: flex; flex-direction: column; gap: 4px; }
+  .stats dt { order: 2; font-family: var(--mono); font-size: 0.75rem; line-height: 1.4; color: var(--ink-soft); }
+  .stats dd {
+    order: 1; margin: 0;
+    font-family: var(--display); font-weight: 700; font-size: clamp(2rem, 4vw, 2.7rem); line-height: 1;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+  }
+
+  /* Two-column bands: section label on the left rail */
+  .band { display: grid; grid-template-columns: minmax(0, 13rem) minmax(0, 1fr); gap: 18px 44px; align-items: start; }
+  .band > header { display: flex; flex-direction: column; gap: 8px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); }
+  .band > header h2 { font-size: 1.55rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.01em; }
+  .band > .body { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+  @media (max-width: 820px) {
+    .band { grid-template-columns: minmax(0, 1fr); }
+    .band > header { position: static; }
+  }
+  .pull {
+    font-family: var(--display); font-weight: 600; font-size: clamp(1.35rem, 2.6vw, 1.8rem); line-height: 1.22;
+    max-width: 28ch; margin: 6px 0 0; color: var(--ink);
+  }
+  .pull::before { content: ""; display: block; width: 44px; height: 6px; background: var(--signal); margin-bottom: 14px; }
+
+  /* The line: pipeline as a tram line */
+  .line-scroll { overflow-x: auto; padding-block: 14px 6px; }
+  .line { list-style: none; margin: 0; padding: 0; display: flex; min-width: 640px; }
+  .line li {
+    flex: 1 1 0; position: relative; padding-top: 18px;
+    border-top: 4px solid var(--accent);
+    font-family: var(--display); font-weight: 600; font-size: 0.95rem;
+  }
+  .line li::before {
+    content: ""; position: absolute; top: -10px; left: 0;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--ground); border: 4px solid var(--accent);
+  }
+  .line li:last-child { flex: 0 0 auto; border-top-color: transparent; padding-right: 4px; }
+  .stops { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; counter-reset: stop; }
+  .stops li {
+    counter-increment: stop;
+    display: grid; grid-template-columns: 2.4rem 7.5rem minmax(0, 1fr); gap: 4px 14px;
+    padding-block: 12px; border-top: 1px solid var(--rule);
+  }
+  .stops li::before { content: counter(stop, decimal-leading-zero); font-family: var(--mono); font-size: 0.75rem; color: var(--ink-soft); padding-top: 5px; }
+  .stops h3 { font-size: 1.05rem; font-weight: 700; }
+  .stops p { font-size: 1rem; line-height: 1.5; }
+  @media (max-width: 560px) {
+    .stops li { grid-template-columns: 2.4rem minmax(0, 1fr); }
+    .stops li p { grid-column: 2; }
+  }
+
+  /* Decision ledger */
+  .ledger { display: flex; flex-direction: column; }
+  .ledger article {
+    display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 9fr); gap: 10px 32px;
+    padding-block: 22px; border-top: 1px solid var(--rule);
+  }
+  .ledger article:last-child { border-bottom: 1px solid var(--rule); }
+  .ledger h3 { font-size: 1.22rem; font-weight: 700; line-height: 1.18; }
+  .ledger .cols { display: flex; flex-direction: column; gap: 12px; }
+  .ledger .cols p { font-size: 1.02rem; line-height: 1.52; }
+  .ledger .tag { display: block; margin-bottom: 2px; }
+  .ledger .cost .tag { color: var(--accent); }
+  @media (max-width: 640px) { .ledger article { grid-template-columns: minmax(0, 1fr); } }
+
+  /* Lists */
+  ul.marks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; max-width: 66ch; }
+  ul.marks li { position: relative; padding-left: 24px; }
+  ul.marks li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 9px; height: 9px; background: var(--accent); }
+
+  /* Timeline */
+  .timeline { display: grid; grid-template-columns: 5.2rem minmax(0, 1fr); gap: 11px 20px; margin: 0; }
+  .timeline dt { font-family: var(--mono); font-size: 0.8125rem; color: var(--ink-soft); padding-top: 4px; font-variant-numeric: tabular-nums; }
+  .timeline dd { margin: 0; max-width: 60ch; }
+  .timeline dd.break { color: var(--ink-soft); font-style: italic; }
+
+  /* Sample */
+  .sample { background: var(--surface); border: 1px solid var(--rule); padding: clamp(18px, 3vw, 30px); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 40px; }
+  @media (max-width: 640px) { .sample { grid-template-columns: minmax(0, 1fr); } }
+  .sample blockquote { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .sample h3 { font-size: 1.1rem; font-weight: 700; line-height: 1.25; }
+  .sample p:not(.mono) { font-size: 1.02rem; line-height: 1.55; }
+  .sample .en p:not(.mono) { color: var(--ink-soft); font-style: italic; }
+
+  /* About */
+  .about { border-top: 3px solid var(--ink); padding-top: 26px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px 48px; align-items: start; }
+  .about .text { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .about h2 { font-size: 1.55rem; font-weight: 700; }
+  .about .links { display: flex; flex-wrap: wrap; gap: 8px 22px; font-family: var(--mono); font-size: 0.875rem; }
+  .scan { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 200px; text-decoration: none; color: var(--ink-soft); }
+  .scan img { width: 200px; height: auto; border-radius: 16px; }
+  .scan span { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.04em; line-height: 1.5; text-align: center; }
+  .scan:hover span, .scan:focus-visible span { color: var(--accent); }
+  @media (max-width: 640px) {
+    .about { grid-template-columns: minmax(0, 1fr); }
+    .scan { flex-direction: row; align-items: center; width: auto; gap: 16px; }
+    .scan img { width: 132px; flex: none; }
+    .scan span { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="mono">Case study · Personal project, built in free time · Belgrade, 2026</p>
+    <h1>Fokus</h1>
+    <p class="standfirst">Fokus is a weekly guide, in Serbian, to what's worth doing in Belgrade, curated by an AI editor that works to my taste. I built it in my free time, as a hobby, to fill a gap I noticed in my own city and solve a real problem for people who want to go out without trawling ten sites. I'm a product manager, not an engineer. I wrote the specs, made the decisions and reviewed every issue. Claude Code wrote every line of code.</p>
+    <div class="status">
+      <b>Live</b>
+      <span>Public on Telegram since 21 September 2026, after weekly builds reviewed in a private channel since July. New issue every Monday at <a href="https://t.me/+aXc7f7O6-lExNTU0">@fokusweekly</a>.</span>
+    </div>
+  </header>
+
+  <dl class="stats" aria-label="The project in numbers">
+    <div><dt>event sources read every week</dt><dd>35</dd></div>
+    <div><dt>events in the store it owns</dt><dd>6,488</dd></div>
+    <div><dt>offline tests, run on every push</dt><dd>192</dd></div>
+    <div><dt>phase specs, each written before the build</dt><dd>17</dd></div>
+    <div><dt>commits in about 10 weeks of work</dt><dd>111</dd></div>
+    <div><dt>person</dt><dd>1</dd></div>
+  </dl>
+
+  <section class="band">
+    <header><p class="mono">The problem</p><h2>Everything is listed. Nothing is recommended.</h2></header>
+    <div class="body">
+      <p>Belgrade has no single trustworthy place to see what's on. Listings are scattered across venue sites, ticket vendors, aggregators and Instagram. The places that collect them list everything and recommend nothing.</p>
+      <p>I wanted what a friend who knows the city gives you: a short list, chosen with taste. The promise is simple. Read it once a week and miss nothing you'd have wanted.</p>
+      <p class="pull">The trusted place to see what's worth doing in Belgrade — chosen with taste, not scraped wholesale.</p>
+    </div>
+  </section>
+
+  <section class="band">
+    <header><p class="mono">How it works</p><h2>One line, eight stops</h2></header>
+    <div class="body">
+      <div class="line-scroll" role="img" aria-label="Pipeline: gather, normalize, dedup, store, curate, proofread, render, deliver">
+        <ol class="line" aria-hidden="true">
+          <li>Gather</li><li>Normalize</li><li>Dedup</li><li>Store</li><li>Curate</li><li>Proofread</li><li>Render</li><li>Deliver</li>
+        </ol>
+      </div>
+      <ol class="stops">
+        <li><h3>Gather</h3><p>Each source is read the cheapest way that works: a feed, a calendar file, structured data, the site's own data, and only then an AI read of the page.</p></li>
+        <li><h3>Normalize</h3><p>Keep events that are physically in Belgrade, upcoming or still running, and carry a real link.</p></li>
+        <li><h3>Dedup</h3><p>Fuzzy title and date matching that handles Cyrillic and Latin script. AI is used only for borderline cross-language pairs.</p></li>
+        <li><h3>Store</h3><p>Everything merges into an event store the product owns. This is the asset every later view reads from. The Telegram issue is its first view.</p></li>
+        <li><h3>Curate</h3><p>An AI editor picks and orders to a written standard: one hero, three to five featured picks, one free pick, short listings, and early flags for big events weeks out.</p></li>
+        <li><h3>Proofread</h3><p>A separate Serbian-language pass that may fix the language and never the events.</p></li>
+        <li><h3>Render</h3><p>The issue becomes an article with posters normalized to one size.</p></li>
+        <li><h3>Deliver</h3><p>Telegram. Every issue lands in a review channel first and moves to the public channel on an explicit human go.</p></li>
+      </ol>
+      <p>The store is the asset. The product is what happens at Curate, the judgment applied to that asset every week.</p>
+    </div>
+  </section>
+
+  <section class="band">
+    <header><p class="mono">Decisions</p><h2>What I decided, and what each decision cost</h2></header>
+    <div class="body">
+      <div class="ledger">
+        <article>
+          <h3>The store is the asset, not the product</h3>
+          <div class="cols">
+            <p><span class="mono tag">Why</span>The product is the judgment: a short list chosen with taste, every week, that readers learn to trust. The store is what makes that judgment repeatable, a clean, deduplicated record of what happens in the city that compounds week by week. An email edition or an English one can sit on the same record later, so the Telegram issue is the first view of it, not the only one.</p>
+            <p class="cost"><span class="mono tag">Cost</span>A flat file kept in git will be outgrown. Accepted until it hurts.</p>
+          </div>
+        </article>
+        <article>
+          <h3>Link only to the event's own page</h3>
+          <div class="cols">
+            <p><span class="mono tag">Why</span>Early issues read like reposts of aggregators. Trust needs first-party links, so the rule is enforced in code, not in a style guide.</p>
+            <p class="cost"><span class="mono tag">Cost</span>Measured: in one week about 150 of 202 candidate events could not be printed. The 2 August issue shipped 24 of 24 direct links, and Fokus #1 shipped 25 of 25.</p>
+          </div>
+        </article>
+        <article>
+          <h3>It cannot invent events</h3>
+          <div class="cols">
+            <p><span class="mono tag">Why</span>An automated issue is only safe to send if nothing in it is made up. The model sees only text that was actually fetched, and no link means no event.</p>
+            <p class="cost"><span class="mono tag">Cost</span>Some real events are dropped when their pages are thin.</p>
+          </div>
+        </article>
+        <article>
+          <h3>Cheapest read first, AI as the fallback</h3>
+          <div class="cols">
+            <p><span class="mono tag">Why</span>AI extraction works on any site and survives redesigns, but it is slow and it costs money. One ticket source went from 39 AI reads and about 26 minutes to about 4 seconds by reading the structured data the site already serves.</p>
+            <p class="cost"><span class="mono tag">Cost</span>Unofficial data can change without notice. Every source is isolated, so one broken site never sinks an issue.</p>
+          </div>
+        </article>
+        <article>
+          <h3>The right model for each job</h3>
+          <div class="cols">
+            <p><span class="mono tag">Why</span>Curation and proofreading run on the strongest model, because cheaper curation was visibly weaker. Extraction runs on a small, fast one.</p>
+            <p class="cost"><span class="mono tag">Cost</span>The small model matched images to events poorly, so posters now come from each event's own page instead.</p>
+          </div>
+        </article>
+        <article>
+          <h3>Builds are automated. Publishing is a human act.</h3>
+          <div class="cols">
+            <p><span class="mono tag">Why</span>The waiting is automated, never the taste. A scheduled build prepares the draft and a report on Sunday. Nothing goes out on Monday without my approval.</p>
+            <p class="cost"><span class="mono tag">Cost</span>The fully unattended mode stays switched off, even with the pre-send safety net live since October.</p>
+          </div>
+        </article>
+        <article>
+          <h3>No prices</h3>
+          <div class="cols">
+            <p><span class="mono tag">Why</span>Research said readers want prices. Measurement said only 25 percent of events, 91 of 364, publish one reliably. A price line that is right a quarter of the time destroys trust.</p>
+            <p class="cost"><span class="mono tag">Cost</span>Free events are flagged. For everything else the reader follows the link.</p>
+          </div>
+        </article>
+        <article>
+          <h3>Parked my own operator console</h3>
+          <div class="cols">
+            <p><span class="mono tag">Why</span>I built an operator console, then parked it three days later when the chat-first workflow proved faster.</p>
+            <p class="cost"><span class="mono tag">Cost</span>A sunk cost, written down in the decision log and left there.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <header><p class="mono">Taste</p><h2>Teaching an AI editor my taste</h2></header>
+    <div class="body">
+      <p>The curation rules live in one plain-English file. It is pasted word for word into the editor's prompt and versioned like code, now at version 2.6. Every slip I catch becomes a rule. Some rules are about what belongs at all. In July I cut the whole tech scene, meetups, hackathons and startup events, while gaming, anime and comics stayed.</p>
+      <p>A lot of that file is about writing like a person. Not to hide that a machine writes the issue, but because machine cadence is tiring, and a guide you don't enjoy reading is a guide you stop reading. I wanted the text to read the way a friend who knows the city talks, and I took the time to get it there.</p>
+      <p>Two examples from August. The hero and all five featured blurbs had landed at 52 to 58 words and exactly four sentences each. That uniformity is a machine tell, so the rule became "length follows weight". The same week I banned the explanatory mid-sentence colon, another tell. The rule went into the voice section and the proofreader's checklist with a test the writer can apply, and I rewrote the rules file itself without colons, because whatever cadence the file is written in is the cadence the writer sees.</p>
+      <p>The loop runs every week and has three exits. A slip about judgment or voice becomes a rule in the profile. A slip about language goes into the native-Serbian proofreader's checklist, like the wrong preposition I caught the day before launch. Anything a machine can catch next time becomes a check in the issue report, like two picks sharing one poster, or a repeat that has not earned its place. The next build follows the rule and the report tells me whether it held. That is the quality loop, and it is why the standard tightens instead of drifting.</p>
+    </div>
+  </section>
+
+  <section class="band">
+    <header><p class="mono">Quality</p><h2>Tests, reports and audits</h2></header>
+    <div class="body">
+      <ul class="marks">
+        <li><strong>192 offline tests</strong> run in CI on every push, up from 70 in June.</li>
+        <li><strong>An issue report after every build.</strong> Slots used against allowance, share of the pool used, every non-direct link named, link health, and which sources are going quiet. I can't read 300 candidates a week, yet I own the final call, so the report reads them for me.</li>
+        <li><strong>A link can load fine and still show the wrong event.</strong> Two gates catch that now: a title check when duplicates are merged, and a destination check in the report.</li>
+        <li><strong>A source health audit found three silent losses.</strong> A calendar returning 9 events instead of 30, a club source queried for 16 days instead of 30, and 41 records that ended before they started. None of them had raised an error.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band">
+    <header><p class="mono">Method</p><h2>How I work with Claude Code</h2></header>
+    <div class="body">
+      <p>I own the vision, the PRD, the editorial standard, the roadmap and the specs. Claude Code owns the pipeline, the tests and the engineering docs.</p>
+      <p>All of it happened in free time, around a full-time product job, so the time budget was the hard constraint and it shaped the method. A spec first, so a short session cannot wander. Decisions logged, so nothing is re-argued a week later. Tests in CI, so a quick change cannot quietly break Sunday's build. That discipline is the one I use at work. What is new is that with Claude Code a product manager can carry a product from spec to a live weekly send alone, in the hours a day job leaves.</p>
+      <p>Every phase starts with a short spec, written first: what it does, inputs and outputs, and how we'll know it works. There are 17 of them. Decisions are logged with an ID, a date and the reasoning, so they don't get argued twice.</p>
+      <p>The loop is: say it, update the doc, build, run, review real output, tweak, commit. A phase is a session, not a quarter. On 9 June that loop shipped five builds in one day.</p>
+    </div>
+  </section>
+
+  <section class="band">
+    <header><p class="mono">Timeline</p><h2>About ten weeks of work</h2></header>
+    <div class="body">
+      <dl class="timeline">
+        <dt>3 Jun</dt><dd>First commit.</dd>
+        <dt>6 Jun</dt><dd>Telegram delivery working.</dd>
+        <dt>8 Jun</dt><dd>33 sources, the link-quality policy, tests and CI.</dd>
+        <dt>9 Jun</dt><dd>Five builds in one day: faster ingestion, a speed layer, early flags for sell-out events, better posters.</dd>
+        <dt>11 Jun</dt><dd>A 2,200-line file split into eleven modules.</dd>
+        <dt>14 Jun</dt><dd>Editorial profile version 2, the curator's rulebook.</dd>
+        <dt>15 Jun</dt><dd class="break">About a month away on vacation.</dd>
+        <dt>17 Jul</dt><dd>Separate review and publish channels, and the issue report.</dd>
+        <dt>28 Jul</dt><dd>Weekly cadence on a schedule: Sunday build, Monday send on my approval.</dd>
+        <dt>2 Aug</dt><dd>First issue on the scheduled cadence, 24 of 24 direct links.</dd>
+        <dt>9 Aug</dt><dd>Four more sources read from their own data, the health audit, profile version 2.2.</dd>
+        <dt>Aug–Sep</dt><dd class="break">Two more weeks away on vacation.</dd>
+        <dt>20 Sep</dt><dd>Public channel created under the name Fokus.</dd>
+        <dt>21 Sep</dt><dd>Public launch. Fokus #1 goes out with 25 of 25 direct links, on a Monday, as every issue will.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="band">
+    <header><p class="mono">Learnings</p><h2>What I learned</h2></header>
+    <div class="body">
+      <ul class="marks">
+        <li><strong>An unattended agent needs a rule for what not to do.</strong> A scheduled Sunday build once stalled all day, one minute in, on a permission prompt for a command nobody had asked for, while the finished draft sat on disk unnoticed. Listing what the task must run said nothing about what it must not. Now the instruction says "run nothing else", harmless read-only commands are pre-approved, and the send still needs a human click.</li>
+        <li><strong>Silent losses never raised an error.</strong> Three sources were quietly under-delivering until a weekly report started checking them.</li>
+        <li><strong>Research informed, measurement decided.</strong> My own data overrode the newsletter benchmarks on prices, item count and structure.</li>
+        <li><strong>Only explicit rules changed the AI's writing.</strong> Vague intent did nothing. Written rules such as "length follows weight" did.</li>
+        <li><strong>The blocker was never code.</strong> "Never launching" was logged as the top open risk, which is why the last milestone before launch was a name and a public channel, not another feature. It went public on 21 September.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band">
+    <header><p class="mono">Next</p><h2>What comes next</h2></header>
+    <div class="body">
+      <p>Telegram was the quickest way to real readers. One public channel, no signup, no email plumbing, and the audience already on it. It is a market test before a bigger build. I want to see how the channel behaves, hear from readers and iterate on the issue itself before committing more effort to a direction that might be wrong.</p>
+      <dl class="timeline">
+        <dt>Now</dt><dd>Launch had a definition written down in advance: a named public channel, four consecutive weekly issues, and either the safety net live or human review declared the gate. All three were met by mid-October, the safety net included, and every send still waits for my go. The channel stays small on purpose for now. A few readers let me feel the issue out and hear what they say before a bigger rollout and reader acquisition. One smaller build rides along, the voice decided in June and not yet rolled out.</dd>
+        <dt>Next</dt><dd>Email. The master text already renders per channel, Telegram gets the emojis and email stays clean, so this is a second view of the same issue, not a second product. It comes once Telegram has shown that the read is worth a weekly slot in an inbox.</dd>
+        <dt>Later</dt><dd>An English edition, the same picks rendered in a second language with the curation unchanged. Per-interest cuts of the same issue if readers ask for them. And the same idea could travel to another city one day. A door left open, not a promise.</dd>
+        <dt>Not</dt><dd>Another exhaustive listing. The store could power a browsable calendar of everything on in the city, and it will not, because Belgrade has plenty of places that list everything and none that choose. The goal is to be the best curated guide to the city, the one weekly read people trust. Knowing where not to grow is as much a product decision as knowing what to build.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="band">
+    <header><p class="mono">Output</p><h2>From a recent issue</h2></header>
+    <div class="body">
+      <p>The hero pick and one featured pick from the issue for 24 to 31 August. The hero is the longest item on purpose, and the featured blurb picks up its thread. Links and posters removed.</p>
+      <div class="sample">
+        <blockquote class="sr" lang="sr">
+          <p class="mono">Ako ništa drugo, onda ovo</p>
+          <h3>Judas Priest, petak 28. avgust, Ušće Park</h3>
+          <p>Ovo je koncert oko kog se cela nedelja vrti. Britanci sviraju više od pola veka i još uvek drže standard po kom se ceo žanr meri, a „Breaking the Law" i „Painkiller" su odavno izašli iz metala i postali opšte mesto. Ušće je za njih tačan format, otvoreno nebo i publika koja peva svaku reč, jer se ovakvi bendovi ne slušaju u sali nego napolju. Beograd ih je čekao dugo, pa ovo spada u one koncerte koje ljudi pamte po godini, a ne po datumu. Program počinje rano popodne, tako da računajte na dugo veče.</p>
+        </blockquote>
+        <blockquote class="en">
+          <p class="mono">If nothing else, then this</p>
+          <h3>Judas Priest, Friday 28 August, Ušće Park</h3>
+          <p>This is the concert the whole week turns on. The British band has been playing for more than half a century and still sets the standard the whole genre is measured by, and "Breaking the Law" and "Painkiller" left metal long ago and became common property. Ušće is the right format for them, open sky and a crowd that sings every word, because bands like this aren't heard in a hall but outdoors. Belgrade has waited a long time, so this is one of those concerts people remember by the year, not the date. The program starts in the early afternoon, so count on a long evening.</p>
+        </blockquote>
+        <blockquote class="sr" lang="sr">
+          <p class="mono">Izdvajamo</p>
+          <h3>Stereo MC's, petak 28. avgust, OpenAir Corner, Luka Beograd</h3>
+          <p>Iste večeri kad Ušće grmi, u Luci se igra uz „Connected". Britanci koji su spojili hip-hop, fank i elektroniku u nešto što se i posle trideset godina vrti po klubovima sviraju na otvorenom, pored same reke. Ko je bio u Hangaru 2023. zna zašto ovo nije koncert za sedenje.</p>
+        </blockquote>
+        <blockquote class="en">
+          <p class="mono">We single out</p>
+          <h3>Stereo MC's, Friday 28 August, OpenAir Corner, Port of Belgrade</h3>
+          <p>On the same evening that Ušće thunders, the Port dances to "Connected". The British act that fused hip-hop, funk and electronica into something still spinning in clubs thirty years on plays in the open air, right by the river. Anyone who was at Hangar in 2023 knows why this is not a concert for sitting down.</p>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <footer class="about">
+    <div class="text">
+      <p class="mono">About</p>
+      <h2>Marko Alyass Zarić</h2>
+      <p>Senior product manager in Belgrade. I pitched and led Telesign's Verify API from concept to launch, and I now run product for a licensed e-money wallet app that launched in October 2026. Fokus is my own project, built and run in my free time. The repository is private because the store holds third-party listings. I'm happy to walk through the code, the docs and a live build on a call.</p>
+      <p class="links"><a href="https://t.me/+aXc7f7O6-lExNTU0">Fokus on Telegram</a><a href="https://www.linkedin.com/in/markoalyass/">linkedin.com/in/markoalyass</a></p>
+    </div>
+    <a class="scan" href="https://t.me/+aXc7f7O6-lExNTU0" aria-label="Open Fokus in Telegram">
+      <img src="img/fokus-qr.webp" width="1000" height="1000" alt="QR code that opens the Fokus channel in Telegram" loading="lazy">
+      <span>Scan or tap to open Fokus in Telegram</span>
+    </a>
+  </footer>
+
+</div>
+</body>
+</html>
